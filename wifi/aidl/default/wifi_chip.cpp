@@ -105,13 +105,13 @@ std::string getWlanIfaceName(unsigned idx) {
 // Returns two ifaces in bridged mode.
 std::vector<std::string> getPredefinedApIfaceNames(bool is_bridged) {
     std::vector<std::string> ifnames;
-    std::string sap_interface = android::base::GetProperty("ro.vendor.wifi.sap.interface"s, ""s);
+    std::string sap_interface = android::base::GetProperty("ro.vendor.wifi.sap.interface", "");
     if (sap_interface.empty()) {
         return ifnames;
     }
     ifnames.push_back(sap_interface);
     if (is_bridged) {
-        std::string concurrent_sap_interface = android::base::GetProperty("ro.vendor.wifi.sap.concurrent.iface"s, ""s);
+        std::string concurrent_sap_interface = android::base::GetProperty("ro.vendor.wifi.sap.concurrent.iface", "");
         if (concurrent_sap_interface.empty()) {
             return ifnames;
         }

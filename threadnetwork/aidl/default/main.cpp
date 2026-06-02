@@ -50,10 +50,10 @@ void addThreadChip(int id, const char* url) {
 }
 
 void addSimulatedThreadChip() {
-    std::string local_interface = android::base::GetProperty("persist.vendor.otsim.local_interface"s, "eth1"s);
+    std::string local_interface = android::base::GetProperty("persist.vendor.otsim.local_interface", "eth1");
     CHECK_GT(local_interface.length(), 0);
 
-    int node_id = android::base::GetIntProperty("ro.boot.openthread_node_id"s, 0);
+    int node_id = android::base::GetIntProperty("ro.boot.openthread_node_id", 0);
     CHECK_GT(node_id,0);
 
     std::string url = std::string("spinel+hdlc+forkpty://" \
