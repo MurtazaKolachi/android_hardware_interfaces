@@ -16,6 +16,7 @@
 
 #include "GnssReplayUtils.h"
 
+#include <android-base/properties.h>
 #include <array>
 
 namespace android {
@@ -24,32 +25,28 @@ namespace gnss {
 namespace common {
 
 std::string ReplayUtils::getGnssPath() {
-    std::array<char, PROPERTY_VALUE_MAX> devname_value;
-
-    devname_value.fill(0);
-    if (property_get("debug.location.gnss.devname", devname_value.begin(), NULL) > 0) {
-        return devname_value.begin();
+    std::string devname = android::base::GetProperty("debug.location.gnss.devname", "");
+    if (!devname.empty()) {
+        return devname;
     }
 
-    devname_value.fill(0);
-    if (property_get("vendor.ser.gnss-uart", devname_value.begin(), NULL) > 0) {
-        return devname_value.begin();
+    devname = android::base::GetProperty("vendor.ser.gnss-uart", "");
+    if (!devname.empty()) {
+        return devname;
     }
 
     return GNSS_PATH;
 }
 
 std::string ReplayUtils::getFixedLocationPath() {
-    std::array<char, PROPERTY_VALUE_MAX> devname_value;
-
-    devname_value.fill(0);
-    if (property_get("debug.location.fixedlocation.devname", devname_value.begin(), NULL) > 0) {
-        return devname_value.begin();
+    std::string devname = android::base::GetProperty("debug.location.fixedlocation.devname", "");
+    if (!devname.empty()) {
+        return devname;
     }
 
-    devname_value.fill(0);
-    if (property_get("vendor.ser.gnss-uart", devname_value.begin(), NULL) > 0) {
-        return devname_value.begin();
+    devname = android::base::GetProperty("vendor.ser.fixedlocation-uart", "");
+    if (!devname.empty()) {
+        return devname;
     }
 
     return FIXED_LOCATION_PATH;

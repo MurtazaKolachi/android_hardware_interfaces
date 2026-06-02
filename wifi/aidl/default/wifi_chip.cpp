@@ -17,6 +17,7 @@
 #include "wifi_chip.h"
 
 #include <android-base/logging.h>
+#include <android-base/properties.h>
 #include <android-base/unique_fd.h>
 #include <cutils/properties.h>
 #include <fcntl.h>
@@ -104,18 +105,17 @@ std::string getWlanIfaceName(unsigned idx) {
 // Returns two ifaces in bridged mode.
 std::vector<std::string> getPredefinedApIfaceNames(bool is_bridged) {
     std::vector<std::string> ifnames;
-    std::array<char, PROPERTY_VALUE_MAX> buffer;
-    buffer.fill(0);
-    if (property_get("ro.vendor.wifi.sap.interface", buffer.data(), nullptr) == 0) {
+    std::string sap_interface = android::base::GetProperty("ro.vendor.wifi.sap.interface"s, ""s);
+    if (sap_interface.empty()) {
         return ifnames;
     }
-    ifnames.push_back(buffer.data());
+    ifnames.push_back(sap_interface);
     if (is_bridged) {
-        buffer.fill(0);
-        if (property_get("ro.vendor.wifi.sap.concurrent.iface", buffer.data(), nullptr) == 0) {
+        std::string concurrent_sap_interface = android::base::GetProperty("ro.vendor.wifi.sap.concurrent.iface"s, ""s);
+        if (concurrent_sap_interface.empty()) {
             return ifnames;
         }
-        ifnames.push_back(buffer.data());
+        ifnames.push_back(concurrent_sap_interface);
     }
     return ifnames;
 }

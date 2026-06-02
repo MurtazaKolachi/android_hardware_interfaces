@@ -16,6 +16,7 @@
 
 #include <aidl/android/hardware/threadnetwork/IThreadChip.h>
 #include <android-base/logging.h>
+#include <android-base/properties.h>
 #include <android/binder_manager.h>
 #include <android/binder_process.h>
 #include <netinet/in.h>
@@ -49,12 +50,10 @@ void addThreadChip(int id, const char* url) {
 }
 
 void addSimulatedThreadChip() {
-    char local_interface[PROP_VALUE_MAX];
+    std::string local_interface = android::base::GetProperty("persist.vendor.otsim.local_interface"s, "eth1"s);
+    CHECK_GT(local_interface.length(), 0);
 
-    CHECK_GT(property_get("persist.vendor.otsim.local_interface",
-                local_interface, "eth1"), 0);
-
-    int node_id = property_get_int32("ro.boot.openthread_node_id", 0);
+    int node_id = android::base::GetIntProperty("ro.boot.openthread_node_id"s, 0);
     CHECK_GT(node_id,0);
 
     std::string url = std::string("spinel+hdlc+forkpty://" \
